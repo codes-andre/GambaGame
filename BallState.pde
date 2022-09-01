@@ -1,0 +1,3 @@
+enum BallState {
+  BEGINNING, JUMPING, FALLING, HASPLATFORM
+}
