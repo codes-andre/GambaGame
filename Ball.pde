@@ -6,6 +6,7 @@ class Ball implements GameObject {
   
   private float direcaoX = 1;
   private float vel = 200;
+  private float velX = 200;
   
   private float dx = 0;
   private float dy = 0;
@@ -27,7 +28,7 @@ class Ball implements GameObject {
     
     switch(state) {
     case HASPLATFORM:
-      x += vel * elapsedTime * direcaoX;
+      x += elapsedTime * direcaoX * velX;
       if (platform.isHorizontallyOut(x)) {
         state = BallState.FALLING;
         dx = 0;
@@ -56,6 +57,8 @@ class Ball implements GameObject {
       y += vel * elapsedTime;
       break;
     }
+    
+    velX = velX >= velX/100 ? velX - velX/100 : 1;
   }
   
   Boolean collided(Platform to) {
@@ -73,20 +76,46 @@ class Ball implements GameObject {
     return false;
   }
   
+  Boolean collided(EnemyObject enemy) {
+    if (enemy.isCollision(this.x + (direcaoX * tamanhoBola/2), this.y - dy)) {
+      println("D I E D");
+      this.direcaoX = 0;
+      return true;
+    }
+    return false;
+  }
+  
   void render() {
     circle(x, y - dy, tamanhoBola);
   }
   
-  void mousePressed() {
-    if (state == BallState.HASPLATFORM) {
-       state = BallState.JUMPING;
-       platform = null;
-       dx = -d/2 * direcaoX;
-    }
-  }
+  void mousePressed() { }
   
   void keyPressed() {
-    if (keyCode == 32 && state == BallState.HASPLATFORM) { direcaoX = -direcaoX; }
+    
+    switch(keyCode) {
+      case 37:
+        if (state == BallState.HASPLATFORM) { 
+          direcaoX = -1;
+          velX = 200;
+        }
+        break;
+
+       case 39:
+        if (state == BallState.HASPLATFORM) { 
+          direcaoX = 1;
+          velX = 200;
+        }
+        break;
+
+      case 32:
+        if (state == BallState.HASPLATFORM) { 
+          state = BallState.JUMPING;
+          platform = null;
+          dx = -d/2 * direcaoX;
+        }
+        break;
+    }
   }
   
   private float calc_dy(float dx) {
