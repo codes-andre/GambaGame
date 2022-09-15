@@ -76,13 +76,20 @@ class Ball implements GameObject {
     return false;
   }
   
-  Boolean collided(EnemyObject enemy) {
-    if (enemy.isCollision(this.x + (direcaoX * tamanhoBola/2), this.y - dy)) {
-      println("D I E D");
-      this.direcaoX = 0;
-      return true;
-    }
-    return false;
+  Boolean collided(BaseEnemyObject enemy) {
+    float middleRadio = cos(45)*tamanhoBola/2;
+    // Pontos: 0°, 315°, 270°, 225°, 180°, 135°, 90°, 45°
+    
+    Boolean p1 = enemy.isCollision(this.x + tamanhoBola/2, this.y - dy);
+    Boolean p2 = p1 || enemy.isCollision(this.x + middleRadio, this.y - middleRadio - dy);
+    Boolean p3 = p2 || enemy.isCollision(this.x, this.y - tamanhoBola/2 - dy);
+    Boolean p4 = p3 || enemy.isCollision(this.x - middleRadio, this.y - middleRadio - dy);
+    Boolean p5 = p4 || enemy.isCollision(this.x - tamanhoBola/2, this.y - dy);
+    Boolean p6 = p5 || enemy.isCollision(this.x - middleRadio, this.y + middleRadio - dy);
+    Boolean p7 = p6 || enemy.isCollision(this.x, this.y + tamanhoBola/2 - dy);
+    Boolean p8Colision = p7 || enemy.isCollision(this.x + middleRadio, this.y + middleRadio - dy);
+    
+    return p8Colision;
   }
   
   void render() {

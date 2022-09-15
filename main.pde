@@ -1,14 +1,15 @@
- float startTime = 0;
+float startTime = 0;
 
+GameState state = GameState.RUNNING;
 Ball ball = new Ball(100,700);
 Platform main = new Platform(0, 748, 900,60);
 Platform p1 = new Platform(600, 550, 300, 20);
 Platform p2 = new Platform(200, 550, 300, 20);
-EnemyObject e1 = new EnemyObject(300, 470, 60, 80);
+BarEnemyObject e1 = new BarEnemyObject(300, 470, 60, 80);
 
 ArrayList<GameObject> gameObjects = new ArrayList<>();
 ArrayList<Platform> platforms = new ArrayList<>();
-ArrayList<EnemyObject> enemies = new ArrayList<>();
+ArrayList<BaseEnemyObject> enemies = new ArrayList<>();
 
 void setup() {
   size(1024, 768);
@@ -24,9 +25,7 @@ void setup() {
   platforms.add(p2);
   
   enemies.add(e1);
-  
-  
-  // Ball will be always the last one
+
   gameObjects.add(ball);
 }
 
@@ -35,23 +34,25 @@ void draw() {
   startTime = millis();
 
   clear();
+  updateEnemies();
   update(elapsedTime);
   render();
 }
 
 void update(float elapsedTime) {
+  if (state == GameState.FINISH) { return; }
+  
   for(GameObject go: gameObjects) {
     go.update(elapsedTime);
   }
 
-  for(Platform go: platforms) {
-    if (ball.collided(go)) { break; }
+  for(Platform plat: platforms) {
+    if (ball.collided(plat)) { break; }
   }
-  
-  for(EnemyObject enemy: enemies) {
-    if (ball != null && ball.collided(enemy)) {
-      //gameObjects.remove(1);
-      //ball = null;
+
+  for(BaseEnemyObject enemy: enemies) {
+    if (ball.collided(enemy)) {
+      state = GameState.FINISH;
     }
   }
 }
@@ -59,6 +60,34 @@ void update(float elapsedTime) {
 void render() {
   for(GameObject go: gameObjects) {
     go.render();
+  }
+}
+
+void updateEnemies() {
+  ArrayList<BaseEnemyObject> toRemove = new ArrayList<>();
+  ArrayList<BaseEnemyObject> toInsert = new ArrayList<>();
+  
+  for(BaseEnemyObject enemy: enemies) {
+    ArrayList<BaseEnemyObject> children = enemy.getChildren();
+    for(BaseEnemyObject child: children) {
+      if (child.isAlive) {
+        if (!enemies.contains(child)) {
+          toInsert.add(child);
+        }
+      } else {
+        toRemove.add(child);
+      }
+    }
+  }
+  
+  for(BaseEnemyObject enemy: toRemove) {
+    enemies.remove(enemy);
+    gameObjects.remove(enemy);
+  }
+ 
+   for(BaseEnemyObject enemy: toInsert) {
+    enemies.add(enemy);
+    gameObjects.add(enemy);
   }
 }
 
