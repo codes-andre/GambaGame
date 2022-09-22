@@ -5,7 +5,8 @@ Ball ball = new Ball(100,700);
 Platform main = new Platform(0, 748, 900,60);
 Platform p1 = new Platform(600, 550, 300, 20);
 Platform p2 = new Platform(200, 550, 300, 20);
-BarEnemyObject e1 = new BarEnemyObject(300, 470, 60, 80);
+BarEnemyObject e1 = new BarEnemyObject(300, 470, 30, 80);
+BarMovimentEnemyObject em1 = new BarMovimentEnemyObject(700, 470, 30, 80, MovimentDirection.HORIZONTAL);
 
 ArrayList<GameObject> gameObjects = new ArrayList<>();
 ArrayList<Platform> platforms = new ArrayList<>();
@@ -19,12 +20,14 @@ void setup() {
   gameObjects.add(p1);
   gameObjects.add(p2);
   gameObjects.add(e1);
+  gameObjects.add(em1);
 
   platforms.add(main);
   platforms.add(p1);
   platforms.add(p2);
   
   enemies.add(e1);
+  enemies.add(em1);
 
   gameObjects.add(ball);
 }
@@ -69,6 +72,7 @@ void updateEnemies() {
   
   for(BaseEnemyObject enemy: enemies) {
     ArrayList<BaseEnemyObject> children = enemy.getChildren();
+    
     for(BaseEnemyObject child: children) {
       if (child.isAlive) {
         if (!enemies.contains(child)) {

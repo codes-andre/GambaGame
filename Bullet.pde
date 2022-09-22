@@ -4,7 +4,7 @@ class Bullet extends BaseEnemyObject {
   private float size = 15;
   private float dx = 0;
 
-  private float vel = 30;
+  private float vel = 100;
   
   Bullet(float x, float y){
     this.x = x;
