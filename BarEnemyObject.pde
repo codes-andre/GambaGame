@@ -33,6 +33,10 @@ class BarEnemyObject extends BaseEnemyObject {
     rect(x, y, w, h);
   }
   
+  Image getImage() {
+    return new Image(loadImage("pew.png"), x, y, w, h);
+  }
+  
   // BaseEnemyObject
   
   Boolean isCollision(float x, float y) {

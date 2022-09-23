@@ -1,30 +1,33 @@
 float startTime = 0;
-// 1 == (1024, 768)
-float scale = 1.7;
-int s_w = int(603 * scale);
-int s_h = int(400 * scale);
+// 1.7 == (1024, 768)
+float scale = 1;
 GameState state = GameState.RUNNING;
-Ball ball = new Ball(100,700);
+Ball ball = new Ball(scaleFrom(100),scaleFrom(290), scaleFrom(50));
 
-Platform main = new Platform(0, 355, 603,45);
-Platform p1 = new Platform(0, 152, 176, 20);
-Platform p2 = new Platform(400, 93, 146, 20);
+Platform main = new Platform(0, scaleFrom(355), scaleFrom(603),scaleFrom(45));
+Platform p1 = new Platform(0, scaleFrom(152), scaleFrom(176), scaleFrom(20));
+Platform p2 = new Platform(scaleFrom(400), scaleFrom(93), scaleFrom(146), scaleFrom(20));
 
-BarEnemyObject e1 = new BarEnemyObject(107, 106, 54, 48);
-BarMovimentEnemyObject em1 = new BarMovimentEnemyObject(200, 310, 50, 60, MovimentDirection.HORIZONTAL);
+BarEnemyObject e1 = new BarEnemyObject(scaleFrom(107), scaleFrom(106), scaleFrom(54), scaleFrom(48));
+BarMovimentEnemyObject em1 = new BarMovimentEnemyObject(scaleFrom(200), scaleFrom(310), scaleFrom(50), scaleFrom(60), MovimentDirection.HORIZONTAL);
 
-SpecialItem keey = new SpecialItem(8, 66, 61, 78, ItemType.KEY);
-SpecialItem door = new SpecialItem(476, 14, 53, 78, ItemType.DOOR);
+SpecialItem keey = new SpecialItem(scaleFrom(8), scaleFrom(66), scaleFrom(61), scaleFrom(78), ItemType.KEY);
+SpecialItem door = new SpecialItem(scaleFrom(476), scaleFrom(14), scaleFrom(53), scaleFrom(78), ItemType.DOOR);
+
+ArrayList<Image> images = new ArrayList<>();
 
 ArrayList<GameObject> gameObjects = new ArrayList<>();
 ArrayList<Platform> platforms = new ArrayList<>();
 ArrayList<BaseEnemyObject> enemies = new ArrayList<>();
 ArrayList<SpecialItem> special_items = new ArrayList<>();
 
-void setup() {
-  size(s_w, s_h);
-  startTime = millis();
+void settings() {
+  size(scaleFrom(603), scaleFrom(400));
+}
 
+void setup() {
+  startTime = millis();
+  //img = loadImage("key.png");
   gameObjects.add(main);
   gameObjects.add(p1);
   gameObjects.add(p2);
@@ -44,20 +47,32 @@ void setup() {
   special_items.add(door);
 
   gameObjects.add(ball);
+  
+  //for(GameObject go: gameObjects) {
+  //  Image img = go.getImage();
+  //  images.add(img);
+  //}
 }
 
 void draw() {
+  if (state == GameState.FINISH) { return; }
+  
   float elapsedTime = ((millis() - startTime) / 1000.0f);
   startTime = millis();
 
-  clear();
+  background(99,200,236);
+  
+  for(Image img: images) {
+    image(img.image, img.x, img.y);
+    img.image.resize(scaleFrom(img.w), scaleFrom(img.h));
+  }
+  
   updateEnemies();
   update(elapsedTime);
   render();
 }
 
 void update(float elapsedTime) {
-  if (state == GameState.FINISH) { return; }
   
   for(GameObject go: gameObjects) {
     go.update(elapsedTime);
@@ -72,6 +87,12 @@ void update(float elapsedTime) {
       state = GameState.FINISH;
     }
   }
+  
+  images = new ArrayList<>();
+  for(GameObject go: gameObjects) {
+    Image img = go.getImage();
+    images.add(img);
+  }
 }
 
 void render() {
@@ -80,9 +101,13 @@ void render() {
   }
 }
 
-//int scaleFrom(int s) {
-  //return int(scale * s);
-//}
+int scaleFrom(int s) {
+  return int(scale * s);
+}
+
+int scaleFrom(float s) {
+  return int(scale * s);
+}
 void updateEnemies() {
   ArrayList<BaseEnemyObject> toRemove = new ArrayList<>();
   ArrayList<BaseEnemyObject> toInsert = new ArrayList<>();

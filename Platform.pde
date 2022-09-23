@@ -23,6 +23,11 @@ class Platform implements GameObject {
   void render() {
     rect(x, y, w, h);
   }
+  
+  Image getImage() {
+    String name = x > 0 ? "plat.png" : "ground.png";
+    return new Image(loadImage(name), x, y, w, h);
+  }
 
   Boolean isHorizontallyOut(float x) {
     return x < this.x || x > this.x + this.w;

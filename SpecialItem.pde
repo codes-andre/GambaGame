@@ -7,6 +7,7 @@ class SpecialItem implements GameObject {
   
   private ItemType type;
 
+
   SpecialItem(float x, float y, float w, float h, ItemType type) {
     this.x = x;
     this.y = y;
@@ -18,7 +19,21 @@ class SpecialItem implements GameObject {
   void update(float elapsedTime) { }
 
   void render() {
+    noFill();
     rect(x, y, w, h);
   }
   
+  Image getImage() {
+    String name = "";
+    
+    switch(type){
+    case KEY:
+      name = "key.png";
+      break;
+    case DOOR:
+      name = "door.png";
+      break;
+    }
+    return new Image(loadImage(name), x, y, w, h);
+  }
 }

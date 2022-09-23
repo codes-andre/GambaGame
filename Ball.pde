@@ -2,7 +2,7 @@ class Ball implements GameObject {
 
   private float x;
   private float y;
-  private float tamanhoBola = 50;
+  private float tamanhoBola;
   
   private float direcaoX = 1;
   private float vel = 200;
@@ -17,9 +17,10 @@ class Ball implements GameObject {
   private BallState state;
   Platform platform = null; 
 
-  Ball(float x, float y) {
+  Ball(float x, float y, float tamanhoBola) {
     this.x = x;
     this.y = y;
+    this.tamanhoBola = tamanhoBola;
     
     state = BallState.BEGINNING;
   }
@@ -59,6 +60,10 @@ class Ball implements GameObject {
     }
     
     velX = velX >= velX/100 ? velX - velX/100 : 1;
+  }
+  
+  Image getImage() {
+    return new Image(loadImage("key.png"), x, y, 50, 50);
   }
   
   Boolean collided(Platform to) {

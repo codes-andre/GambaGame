@@ -24,6 +24,10 @@ class Bullet extends BaseEnemyObject {
   void render() {
     rect(x + dx, y, size, size);
   }
+  
+  Image getImage() {
+    return new Image(loadImage("key.png"), x, y, size, size);
+  }
 
   Boolean isCollision(float x, float y) {
     float dx_x = this.x + dx;
