@@ -1,19 +1,28 @@
 float startTime = 0;
-
+// 1 == (1024, 768)
+float scale = 1.7;
+int s_w = int(603 * scale);
+int s_h = int(400 * scale);
 GameState state = GameState.RUNNING;
 Ball ball = new Ball(100,700);
-Platform main = new Platform(0, 748, 900,60);
-Platform p1 = new Platform(600, 550, 300, 20);
-Platform p2 = new Platform(200, 550, 300, 20);
-BarEnemyObject e1 = new BarEnemyObject(300, 470, 30, 80);
-BarMovimentEnemyObject em1 = new BarMovimentEnemyObject(700, 470, 30, 80, MovimentDirection.HORIZONTAL);
+
+Platform main = new Platform(0, 355, 603,45);
+Platform p1 = new Platform(0, 152, 176, 20);
+Platform p2 = new Platform(400, 93, 146, 20);
+
+BarEnemyObject e1 = new BarEnemyObject(107, 106, 54, 48);
+BarMovimentEnemyObject em1 = new BarMovimentEnemyObject(200, 310, 50, 60, MovimentDirection.HORIZONTAL);
+
+SpecialItem keey = new SpecialItem(8, 66, 61, 78, ItemType.KEY);
+SpecialItem door = new SpecialItem(476, 14, 53, 78, ItemType.DOOR);
 
 ArrayList<GameObject> gameObjects = new ArrayList<>();
 ArrayList<Platform> platforms = new ArrayList<>();
 ArrayList<BaseEnemyObject> enemies = new ArrayList<>();
+ArrayList<SpecialItem> special_items = new ArrayList<>();
 
 void setup() {
-  size(1024, 768);
+  size(s_w, s_h);
   startTime = millis();
 
   gameObjects.add(main);
@@ -21,6 +30,8 @@ void setup() {
   gameObjects.add(p2);
   gameObjects.add(e1);
   gameObjects.add(em1);
+  gameObjects.add(keey);
+  gameObjects.add(door);
 
   platforms.add(main);
   platforms.add(p1);
@@ -28,6 +39,9 @@ void setup() {
   
   enemies.add(e1);
   enemies.add(em1);
+  
+  special_items.add(keey);
+  special_items.add(door);
 
   gameObjects.add(ball);
 }
@@ -66,6 +80,9 @@ void render() {
   }
 }
 
+//int scaleFrom(int s) {
+  //return int(scale * s);
+//}
 void updateEnemies() {
   ArrayList<BaseEnemyObject> toRemove = new ArrayList<>();
   ArrayList<BaseEnemyObject> toInsert = new ArrayList<>();

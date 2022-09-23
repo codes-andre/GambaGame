@@ -4,7 +4,7 @@ class Platform implements GameObject {
   private float y;
   private float w = 300;
   private float h = 20;
- 
+
   Platform(float x, float y, float w, float h){
     this.x = x;
     this.y = y;
