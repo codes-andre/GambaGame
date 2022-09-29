@@ -48,7 +48,7 @@ class BarMovimentEnemyObject extends BaseEnemyObject {
   }
   
   Image getImage() {
-    return new Image(loadImage("pew.png"), x, y, w, h);
+    return new Image(loadImage("pew.png"), x + dx, y + dy, w, h);
   }
   
   // BaseEnemyObject

@@ -5,8 +5,8 @@ class SpecialItem implements GameObject {
   private float w;
   private float h;
   
-  private ItemType type;
-
+  public ItemType type;
+  boolean wasAquired;
 
   SpecialItem(float x, float y, float w, float h, ItemType type) {
     this.x = x;
@@ -16,9 +16,14 @@ class SpecialItem implements GameObject {
     this.type = type;
   }
   
+  float getX() { return this.x; }
+  float getY() { return this.y; }
+  float getWidth() { return this.w; }
+  
   void update(float elapsedTime) { }
 
   void render() {
+    noStroke();
     noFill();
     rect(x, y, w, h);
   }

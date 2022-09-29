@@ -6,7 +6,8 @@ class Ball implements GameObject {
   
   private float direcaoX = 1;
   private float vel = 200;
-  private float velX = 200;
+  private float velX = 50;
+  private float originVelX = 50;
   
   private float dx = 0;
   private float dy = 0;
@@ -15,7 +16,10 @@ class Ball implements GameObject {
   private float h = 200;
   
   private BallState state;
+  private SpecialItem keey = null;
+  
   Platform platform = null; 
+  PlatMove platmove = null;
 
   Ball(float x, float y, float tamanhoBola) {
     this.x = x;
@@ -27,6 +31,11 @@ class Ball implements GameObject {
   
   void update(float elapsedTime) {
     
+    velX -= elapsedTime * originVelX;
+    if (velX < 0) {
+      velX = 0;
+    }
+    
     switch(state) {
     case HASPLATFORM:
       x += elapsedTime * direcaoX * velX;
@@ -37,6 +46,18 @@ class Ball implements GameObject {
         dy = h;
       }
       break;
+      
+    case HASPLATMOVE:
+      x += elapsedTime * direcaoX * velX;
+      if (platmove.isHorizontallyOut(x)) {
+        state = BallState.FALLING;
+        dx = 0;
+        y += h;
+        dy = h;
+      }else{
+        y = platmove.getY() - tamanhoBola/2;
+      }
+      break;      
       
     case JUMPING:
       x += vel * elapsedTime * direcaoX;
@@ -63,7 +84,34 @@ class Ball implements GameObject {
   }
   
   Image getImage() {
-    return new Image(loadImage("key.png"), x, y, 50, 50);
+    return new Image(loadImage("idle.png"), x - tamanhoBola, y-dy - (tamanhoBola*2.2), 50, 50);
+  }
+  
+  Boolean collided(SpecialItem item) {
+    if (x > item.getX() && x < item.getX() + item.getWidth() &&
+        y - dy > item.getY() - tamanhoBola / 2 && y - dy < item.getY() + tamanhoBola / 2) {
+
+      if (item.type == ItemType.KEY) {
+          keey = item;
+      }
+      
+      return true;
+    }
+    return false;
+  }
+  
+  Boolean collided(PlatMove to) {
+    if (state != BallState.HASPLATMOVE && (state == BallState.FALLING || state == BallState.BEGINNING) && 
+        x > to.getX() && x < to.getX() + to.getWidth() &&
+        y - dy > to.getY() - tamanhoBola / 2 && y - dy < to.getY() + tamanhoBola / 2) {
+
+      platmove = to;
+      y = to.y - tamanhoBola / 2;
+      dy = 0;
+      state = BallState.HASPLATMOVE;
+      return true;
+    }
+    return false;
   }
   
   Boolean collided(Platform to) {
@@ -97,6 +145,10 @@ class Ball implements GameObject {
     return p8Colision;
   }
   
+  Boolean hasKey() {
+    return keey != null;
+  }
+  
   void render() {
     circle(x, y - dy, tamanhoBola);
   }
@@ -107,21 +159,21 @@ class Ball implements GameObject {
     
     switch(keyCode) {
       case 37:
-        if (state == BallState.HASPLATFORM) { 
+        if (state == BallState.HASPLATFORM || state == BallState.HASPLATMOVE) { 
           direcaoX = -1;
-          velX = 200;
+          velX = originVelX;
         }
         break;
 
        case 39:
-        if (state == BallState.HASPLATFORM) { 
+        if (state == BallState.HASPLATFORM || state == BallState.HASPLATMOVE) { 
           direcaoX = 1;
-          velX = 200;
+          velX = originVelX;
         }
         break;
 
       case 32:
-        if (state == BallState.HASPLATFORM) { 
+        if (state == BallState.HASPLATFORM || state == BallState.HASPLATMOVE) { 
           state = BallState.JUMPING;
           platform = null;
           dx = -d/2 * direcaoX;

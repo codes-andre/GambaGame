@@ -1,7 +1,7 @@
 class Bullet extends BaseEnemyObject { 
   private float x;
   private float y;
-  private float size = 15;
+  private float size = 10;
   private float dx = 0;
 
   private float vel = 100;
@@ -16,7 +16,7 @@ class Bullet extends BaseEnemyObject {
   void update(float elapsedTime) {
     dx += vel * elapsedTime;
  
-    if (dx > 200) {
+    if (dx > 400) {
       isAlive = false;
     }
   }
@@ -26,7 +26,7 @@ class Bullet extends BaseEnemyObject {
   }
   
   Image getImage() {
-    return new Image(loadImage("key.png"), x, y, size, size);
+    return new Image(loadImage("bullet.png"), x + dx, y, size, size);
   }
 
   Boolean isCollision(float x, float y) {
