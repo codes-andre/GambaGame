@@ -1,7 +1,8 @@
 float startTime = 0;
 // 1.7 == (1024, 768)
 float scale = 1;
-GameState state = GameState.RUNNING;
+GameState state = GameState.START;
+
 Ball ball = new Ball(scaleFrom(100),scaleFrom(290), scaleFrom(25));
 
 Platform main = new Platform(0, scaleFrom(453), scaleFrom(600),scaleFrom(45));
@@ -30,7 +31,7 @@ void settings() {
 
 void setup() {
   startTime = millis();
-  //img = loadImage("key.png");
+  
   gameObjects.add(main);
   gameObjects.add(p1);
   gameObjects.add(p2);
@@ -57,10 +58,14 @@ void setup() {
   gameObjects.add(ball);
 }
 
-void draw() {
-  if (state == GameState.FINISH) { return; }
-  if (state == GameState.WIN) { return; }
+void draw() {  
+  textSize(36);
   
+  if (state != GameState.RUNNING) { 
+    render();
+    return; 
+  }
+
   float elapsedTime = ((millis() - startTime) / 1000.0f);
   startTime = millis();
 
@@ -92,7 +97,7 @@ void update(float elapsedTime) {
 
   for(BaseEnemyObject enemy: enemies) {
     if (ball.collided(enemy)) {
-      state = GameState.FINISH;
+      state = GameState.LOSE;
     }
   }
   
@@ -117,8 +122,30 @@ void update(float elapsedTime) {
 }
 
 void render() {
-  for(GameObject go: gameObjects) {
-    go.render();
+  
+  switch (state) {
+    case RUNNING:
+      for(GameObject go: gameObjects) {
+        go.render();
+      }
+    break;
+    
+    case WIN: 
+      clear();
+      background(0,256,0);
+      text("YOU WIN :D", width / 2 - 100, height / 2);
+    break;
+    
+    case LOSE: 
+      clear();
+      background(256,0,0);
+      text("YOU LOSE :(", width / 2 - 100, height / 2);
+    break;
+    
+    case START: 
+      clear();
+      text("PRESS ENTER TO PLAY \\o/", width / 2 - 190, height / 2);
+    break;
   }
 }
 
@@ -163,5 +190,10 @@ void mousePressed() {
 }
 
 void keyPressed() {
-  ball.keyPressed();
+  if (keyCode == 10 && state == GameState.START) {
+    startTime = millis();
+    state = GameState.RUNNING;
+  } else {
+    ball.keyPressed();
+  }
 }

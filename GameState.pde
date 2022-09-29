@@ -1,3 +1,3 @@
 enum GameState {
-  RUNNING, FINISH, WIN
+  START, RUNNING, LOSE, WIN
 }
